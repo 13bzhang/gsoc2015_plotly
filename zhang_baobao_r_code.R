@@ -12,7 +12,7 @@ library(testthat)
 #setwd("~/Dropbox/summer_of_code/plotly")
 
 # credentials
-py <- plotly("13bzhang", "x7x4awct1x")
+py <- plotly("XXX", "XXX")
 
 # Test 1: Make a plot
 p <- ggplot(Orange, aes(age, circumference)) + 
@@ -24,24 +24,22 @@ py$ggplotly()
 # Test 2: Construct the JSON file manually
 
 # construct the data portion
-data <- data.frame(matrix(NA, 1, 8))
-names(data) <- c("x", "y", "mode", "marker", "xaxis", 
-                 "yaxis", "showlegend", "type")
-data$x <- list(Orange$age)
-data$y <- list(Orange$circumference)
-data$mode <- "markers"
-data$marker <- data.frame(stringsAsFactors = FALSE,
-  color = as.character("rgb(0,0,0)"), 
-  size = 10L, 
-  symbol = as.character("circle"), 
-  opacity = 1L, 
-  sizeref = 1L, 
-  sizemode = as.character("area")
+data <- list(
+  x = as.numeric(Orange$age),
+  y = as.numeric(Orange$circumference),
+  mode = "markers",
+  marker = list(
+    color = as.character("rgb(0,0,0)"), 
+    size = 10L, 
+    symbol = as.character("circle"), 
+    opacity = 1L, 
+    sizeref = 1L, 
+    sizemode = as.character("area")),
+  xaxis = "x1",
+  yaxis = "y1",
+  showlegend = FALSE,
+  type = as.character("scatter")
 )
-data$xaxis = "x1" 
-data$yaxis = "y1"
-data$showlegend = FALSE
-data$type = as.character("scatter")
 
 # construct the layout portion
 layout <- list(
@@ -85,14 +83,10 @@ layout <- list(
   plot_bgcolor = "rgb(229,229,229)"
 )
 
-# testing my manually constructed list with the real JSON list
-myjson <- list(data=data, layout=layout) # my 
-w <- fromJSON("https://plot.ly/~13bzhang/143.json") # real
-all.equal(myjson, w) # my list is identical to list from plot.ly
-# send it up to plot.ly: but there are some problems
-py <- plotly("13bzhang", "x7x4awct1x")
-py$plotly(toJSON(w)) # error message: "Expecting (x, y) pairs"
-py$plotly(toJSON(myjson)) # error message: ""Expecting (x, y) pairs"
+# send it up to plot.ly 
+enhanc_hist2 <-
+  py$plotly(data, 
+            kwargs=list(layout=layout))
 
 # Test 3: testthat
 L <- gg2list(p) 
