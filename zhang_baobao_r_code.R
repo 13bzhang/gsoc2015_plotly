@@ -84,9 +84,10 @@ layout <- list(
 )
 
 # send it up to plot.ly 
-enhanc_hist2 <-
+myjson.plot.ly <-
   py$plotly(data, 
             kwargs=list(layout=layout))
+myjson.plot.ly$url
 
 # Test 3: testthat
 L <- gg2list(p) 
